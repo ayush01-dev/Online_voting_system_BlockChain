@@ -1,0 +1,45 @@
+<!-- templates/registration_success.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Success - Blockchain Voting</title>
+    <link href="{{ url_for('static', path='/style.css') }}" rel="stylesheet">
+    <style>
+        .success-container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .success-message {
+            color: #4CAF50;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1 id="page_title">REGISTRATION SUCCESSFUL</h1>
+    
+    <div class="div-class success-container">
+        <div class="success-message">
+            Your account has been successfully created!
+        </div>
+        
+        <p style="color: white;">
+            A confirmation email has been sent to: <strong>{{ email }}</strong>
+        </p>
+        
+        <p style="color: white;">
+            You can now use your email and password to log in and cast your vote.
+        </p>
+        
+        <div style="margin-top: 20px;">
+            <a href="/" style="color: white; background-color: #0f2846; padding: 10px 15px; border-radius: 4px; text-decoration: none;">
+                Go to Voting Page
+            </a>
+        </div>
+    </div>
+</body>
+</html>

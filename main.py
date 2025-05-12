@@ -254,10 +254,17 @@ async def register_user(request: Request):
     
     return RedirectResponse(url="/verify", status_code=303)
 
+@app.get("/registration-success", response_class=HTMLResponse)
+async def registration_success(request: Request, email: str = None):
+    return templates.TemplateResponse(
+        "registration_success.html", 
+        {"request": request, "email": email}
+    )
+
 @app.get("/verify", response_class=HTMLResponse)
 async def verify_page(request: Request):
     if "reg_email" not in request.session:
-        return RedirectResponse(url="/register", status_code=303)
+       return RedirectResponse(url="/registration-success?email=" + request.get("email"), status_code=303)
     
     return templates.TemplateResponse("verify.html", {"request": request})
 
