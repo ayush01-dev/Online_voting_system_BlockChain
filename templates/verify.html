@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify OTP - Blockchain Voting</title>
+    <link href="{{ url_for('static', path='/style.css') }}" rel="stylesheet">
+    <style>
+        .verify-container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: white;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .error-message {
+            color: #ff4d47;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1 id="page_title">VERIFY YOUR EMAIL</h1>
+    
+    <div class="div-class verify-container">
+        <h2>Enter the OTP sent to your email</h2>
+        <p style="color: white;">The OTP is valid for 2 minutes only.</p>
+        
+        {% if error %}
+        <div class="error-message">{{ error }}</div>
+        {% endif %}
+        
+        <form method="post" action="/verify">
+            <div class="form-group">
+                <label for="otp">OTP Code:</label>
+                <input type="text" id="otp" name="otp" required maxlength="6" pattern="\d{6}">
+            </div>
+            
+            <button type="submit">Verify</button>
+        </form>
+    </div>
+</body>
+</html>
