@@ -1,20 +1,21 @@
 
 
 import Varified_gmail_and_password
+
 import json
+import os
+
 
 all_users_dict = {}
+ 
 def get_user_data():
-    with open("Varified_gmail_and_password/users.json", "r") as f:
-        users = json.load(f)
-        data = json.dumps(users, indent=4)
-    # print(data)
-
-    list_of_dicts = [{"email": email, **details} for email, details in users.items()]
-    # print(list_of_dicts)
-    list_of_dicts = {email: details["password"] for email, details in users.items()}
-    # print(list_of_dicts)
-    all_users_dict = list_of_dicts
-    return all_users_dict
-
-
+    users_file = "/var/www/voting-data/users.json" if os.path.exists("/var/www/voting-data") else "Varified_gmail_and_password/users.json"
+    
+    try:
+        with open(users_file, "r") as f:
+            users = json.load(f)
+            list_of_dicts = {email: details["password"] for email, details in users.items()}
+            return list_of_dicts
+    except Exception as e:
+        print(f"Error loading user data: {e}")
+        return {}
