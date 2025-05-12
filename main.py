@@ -19,6 +19,7 @@ import random
 import smtplib
 import time
 import json
+import requests
 
 
 load_dotenv()  # Load environment variables
@@ -299,6 +300,7 @@ async def verify_otp(request: Request):
     try:
         with open(users_file, 'r') as f:
             users = json.load(f)
+            print("users : ", users)
     except:
         users = {}
     
@@ -307,10 +309,12 @@ async def verify_otp(request: Request):
         "age": request.session["reg_age"],
         "password": request.session["reg_password"]
     }
-    
+    print("updates users :", users)
     with open(users_file, "w") as f:
         json.dump(users, f, indent=4)
     
+    # In verify_otp after successful registration
+    requests.get(f"{request.base_url}reload-users")
     # Send welcome email
     send_success_email(email, request.session["reg_name"])
     
@@ -330,6 +334,9 @@ async def CastVote(request: Request):
     formData = await request.form()
     formDict = formData._dict
     print(formData)
+    print(f"Attempting to authenticate: {formDict['userId']}")
+    print(f"Available users: {list(userData.keys())}")
+    print(f"Password match: {formDict['userId'] in userData.keys() and formDict['password'] == userData[formDict['userId']]}")
     print("Reached")
     print(formDict["userId"])
     print(userData.keys())
@@ -397,6 +404,12 @@ async def CastVote(request: Request):
                     }
                 )
 
+
+@app.get("/reload-users")
+async def reload_users():
+    global userData
+    userData = user_data.get_user_data()
+    return {"status": "reloaded", "count": len(userData)}
 
 @app.get("/admin", response_class=HTMLResponse)
 async def admin_panel(request: Request):
