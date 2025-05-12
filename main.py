@@ -265,76 +265,113 @@ async def registration_success(request: Request, email: str = None):
 @app.get("/verify", response_class=HTMLResponse)
 async def verify_page(request: Request):
     if "reg_email" not in request.session:
-       return RedirectResponse(url="/registration-success?email=" + request.get("email"), status_code=303)
+        # This line has an error - request.get doesn't exist
+        # Fix: Just redirect to register
+        return RedirectResponse(url="/register", status_code=303)
     
     return templates.TemplateResponse("verify.html", {"request": request})
 
 @app.post("/verify")
 async def verify_otp(request: Request):
     print("POST /verify received")  
-    form = await request.form()
-    user_otp = form.get("otp")
-    print(f"OTP submitted: {user_otp}")
-    
-    if "reg_otp" not in request.session:
-        return RedirectResponse(url="/register", status_code=303)
-    
-    sent_otp = request.session["reg_otp"]
-    sent_time = request.session["reg_time"]
-    
-    if time.time() - sent_time > 120:
-        return templates.TemplateResponse(
-            "verify.html", 
-            {"request": request, "error": "OTP expired. Please try again."}
-        )
-    
-    if user_otp != sent_otp:
-        return templates.TemplateResponse(
-            "verify.html", 
-            {"request": request, "error": "Incorrect OTP. Please try again."}
-        )
-    
-    # OTP verified, register the user
-    email = request.session["reg_email"]
-    print("email fetched ",email);
-    users_file = "/var/www/voting-data/users.json" if os.path.exists("/var/www/voting-data") else "Varified_gmail_and_password/users.json"
-    print("got users file ")
     try:
-        with open(users_file, 'r') as f:
-            users = json.load(f)
-            print("users : ", users)
-    except:
-        users = {}
+        form = await request.form()
+        user_otp = form.get("otp")
+        print(f"OTP submitted: {user_otp}")
+        
+        if "reg_otp" not in request.session:
+            print("No OTP in session")
+            return RedirectResponse(url="/register", status_code=303)
+        
+        sent_otp = request.session["reg_otp"]
+        sent_time = request.session["reg_time"]
+        
+        if time.time() - sent_time > 120:
+            print("OTP expired")
+            return templates.TemplateResponse(
+                "verify.html", 
+                {"request": request, "error": "OTP expired. Please try again."}
+            )
+        
+        if user_otp != sent_otp:
+            print("Incorrect OTP")
+            return templates.TemplateResponse(
+                "verify.html", 
+                {"request": request, "error": "Incorrect OTP. Please try again."}
+            )
+        
+        # OTP verified, register the user
+        email = request.session["reg_email"]
+        print("Email verified:", email)
+        
+        users_file = "/var/www/voting-data/users.json" if os.path.exists("/var/www/voting-data") else "Varified_gmail_and_password/users.json"
+        
+        try:
+            with open(users_file, 'r') as f:
+                users = json.load(f)
+                print("Loaded existing users")
+        except Exception as e:
+            print(f"Error loading users file: {e}")
+            users = {}
+        
+        users[email] = {
+            "name": request.session["reg_name"],
+            "age": request.session["reg_age"],
+            "password": request.session["reg_password"]
+        }
+        print("Added new user to data structure")
+        
+        try:
+            with open(users_file, "w") as f:
+                json.dump(users, f, indent=4)
+                print("Saved users to file")
+        except Exception as e:
+            print(f"Error saving users file: {e}")
+        
+        # Remove the problematic requests call
+        # Instead, reload users directly
+        try:
+            # Update the global userData variable
+            global userData
+            userData = user_data.get_user_data()
+            print("Reloaded user data")
+        except Exception as e:
+            print(f"Error reloading users: {e}")
+        
+        # Send welcome email
+        try:
+            print("Sending success email")
+            send_success_email(email, request.session["reg_name"])
+            print("Email sent successfully")
+        except Exception as e:
+            print(f"Error sending email: {e}")
+        
+        # Clear registration session data
+        for key in list(request.session.keys()):
+            if key.startswith("reg_"):
+                del request.session[key]
+        
+        print("Redirecting to success page")
+        # Use a redirect instead of template response
+        return RedirectResponse(url=f"/registration-success?email={email}", status_code=303)
     
-    users[email] = {
-        "name": request.session["reg_name"],
-        "age": request.session["reg_age"],
-        "password": request.session["reg_password"]
-    }
-    print("updates users :", users)
-    
-    
-    with open(users_file, "w") as f:
-        data = json.dump(users, f, indent=4)
-        json.dump(users, f, indent=4)
-    print("writing to file :",data)
-    # In verify_otp after successful registration
-    print("reloading users file ")
-    requests.get(f"{request.base_url}reload-users")
-    # Send welcome email
-    print("sending succesfull email")
-    send_success_email(email, request.session["reg_name"])
-    
-    # Clear registration session data
-    for key in list(request.session.keys()):
-        if key.startswith("reg_"):
-            del request.session[key]
-    print("redirecting to registration success.html")
+    except Exception as e:
+        print(f"Unexpected error in verify_otp: {e}")
+        return HTMLResponse(f"An error occurred: {str(e)}")
+
+@app.get("/registration-success", response_class=HTMLResponse)
+async def registration_success(request: Request, email: str = None):
     return templates.TemplateResponse(
         "registration_success.html", 
         {"request": request, "email": email}
     )
 
+# Add a reload-users endpoint
+@app.get("/reload-users")
+async def reload_users():
+    global userData
+    userData = user_data.get_user_data()
+    return {"status": "reloaded", "count": len(userData)}
 
 # ema
 @app.post("/voter/vote")
@@ -413,11 +450,6 @@ async def CastVote(request: Request):
                 )
 
 
-@app.get("/reload-users")
-async def reload_users():
-    global userData
-    userData = user_data.get_user_data()
-    return {"status": "reloaded", "count": len(userData)}
 
 @app.get("/admin", response_class=HTMLResponse)
 async def admin_panel(request: Request):
