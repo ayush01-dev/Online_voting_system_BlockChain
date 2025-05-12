@@ -328,7 +328,7 @@ async def verify_otp(request: Request):
         {"request": request, "email": email}
     )
 
-
+# ema
 @app.post("/voter/vote")
 async def CastVote(request: Request):
     formData = await request.form()
