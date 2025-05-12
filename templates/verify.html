@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -50,6 +50,147 @@
             </div>
         <button type="submit">Verify</button>
     </form>
+    </div>
+</body>
+</html> -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify OTP - Blockchain Voting</title>
+    <link href="{{ url_for('static', path='/style.css') }}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f0f4ff, #dfe9f3);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        h1#page_title {
+            color: #3d5af1;
+            margin-bottom: 30px;
+            font-size: 28px;
+            text-align: center;
+        }
+
+        .otp-container {
+            background-color: #ffffff;
+            padding: 50px 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+            animation: slideIn 0.6s ease;
+        }
+
+        .otp-container h2 {
+            color: #3d5af1;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .otp-message {
+            color: #666;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+
+        .otp-container input {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            font-size: 16px;
+            margin-bottom: 25px;
+            transition: 0.3s;
+        }
+
+        .otp-container input:focus {
+            border-color: #3d5af1;
+            outline: none;
+            box-shadow: 0 0 6px rgba(61, 90, 241, 0.3);
+        }
+
+        .otp-container button {
+            background-color: #3d5af1;
+            color: #fff;
+            border: none;
+            padding: 15px;
+            width: 100%;
+            border-radius: 10px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .otp-container button:hover {
+            background-color: #2a49c8;
+        }
+
+        .error-message {
+            color: #ff4d47;
+            margin: 0 0 20px;
+            font-weight: bold;
+            background-color: rgba(255, 77, 71, 0.1);
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 14px;
+        }
+
+        @keyframes slideIn {
+            0% {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .otp-container {
+                padding: 40px 20px;
+                margin: 0 20px;
+            }
+            
+            h1#page_title {
+                font-size: 24px;
+                padding: 0 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1 id="page_title">VERIFY YOUR EMAIL</h1>
+    
+    <div class="otp-container">
+        <h2>Enter the OTP sent to your email</h2>
+        <p class="otp-message">The OTP is valid for 2 minutes only.</p>
+        
+        {% if error %}
+        <div class="error-message">{{ error }}</div>
+        {% endif %}
+        
+        <form method="post" action="/verify">
+            <input type="text" id="otp" name="otp" placeholder="Enter OTP" required maxlength="6">
+            <button type="submit">Verify</button>
+        </form>
     </div>
 </body>
 </html>
