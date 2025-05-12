@@ -312,11 +312,12 @@ async def verify_otp(request: Request):
         "password": request.session["reg_password"]
     }
     print("updates users :", users)
-    data = json.dump(users, f, indent=4)
-    print("writing to file :",data)
-    with open(users_file, "w") as f:
-        json.dump(users, f, indent=4)
     
+    
+    with open(users_file, "w") as f:
+        data = json.dump(users, f, indent=4)
+        json.dump(users, f, indent=4)
+    print("writing to file :",data)
     # In verify_otp after successful registration
     print("reloading users file ")
     requests.get(f"{request.base_url}reload-users")
