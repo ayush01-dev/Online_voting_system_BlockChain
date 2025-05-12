@@ -269,80 +269,72 @@ async def verify_page(request: Request):
     
     return templates.TemplateResponse("verify.html", {"request": request})
 
-# @app.post("/verify")
-# async def verify_otp(request: Request):
-#     print("POST /verify received")  
-#     form = await request.form()
-#     user_otp = form.get("otp")
-#     print(f"OTP submitted: {user_otp}")
-    
-#     if "reg_otp" not in request.session:
-#         return RedirectResponse(url="/register", status_code=303)
-    
-#     sent_otp = request.session["reg_otp"]
-#     sent_time = request.session["reg_time"]
-    
-#     if time.time() - sent_time > 120:
-#         return templates.TemplateResponse(
-#             "verify.html", 
-#             {"request": request, "error": "OTP expired. Please try again."}
-#         )
-    
-#     if user_otp != sent_otp:
-#         return templates.TemplateResponse(
-#             "verify.html", 
-#             {"request": request, "error": "Incorrect OTP. Please try again."}
-#         )
-    
-#     # OTP verified, register the user
-#     email = request.session["reg_email"]
-    
-#     users_file = "/var/www/voting-data/users.json" if os.path.exists("/var/www/voting-data") else "Varified_gmail_and_password/users.json"
-    
-#     try:
-#         with open(users_file, 'r') as f:
-#             users = json.load(f)
-#             print("users : ", users)
-#     except:
-#         users = {}
-    
-#     users[email] = {
-#         "name": request.session["reg_name"],
-#         "age": request.session["reg_age"],
-#         "password": request.session["reg_password"]
-#     }
-#     print("updates users :", users)
-#     with open(users_file, "w") as f:
-#         json.dump(users, f, indent=4)
-    
-#     # In verify_otp after successful registration
-#     requests.get(f"{request.base_url}reload-users")
-#     # Send welcome email
-#     send_success_email(email, request.session["reg_name"])
-    
-#     # Clear registration session data
-#     for key in list(request.session.keys()):
-#         if key.startswith("reg_"):
-#             del request.session[key]
-    
-#     return templates.TemplateResponse(
-#         "registration_success.html", 
-#         {"request": request, "email": email}
-#     )
-
 @app.post("/verify")
 async def verify_otp(request: Request):
-    print("POST /verify received")
+    print("POST /verify received")  
+    form = await request.form()
+    user_otp = form.get("otp")
+    print(f"OTP submitted: {user_otp}")
+    
+    if "reg_otp" not in request.session:
+        return RedirectResponse(url="/register", status_code=303)
+    
+    sent_otp = request.session["reg_otp"]
+    sent_time = request.session["reg_time"]
+    
+    if time.time() - sent_time > 120:
+        return templates.TemplateResponse(
+            "verify.html", 
+            {"request": request, "error": "OTP expired. Please try again."}
+        )
+    
+    if user_otp != sent_otp:
+        return templates.TemplateResponse(
+            "verify.html", 
+            {"request": request, "error": "Incorrect OTP. Please try again."}
+        )
+    
+    # OTP verified, register the user
+    email = request.session["reg_email"]
+    print("email fetched ",email);
+    users_file = "/var/www/voting-data/users.json" if os.path.exists("/var/www/voting-data") else "Varified_gmail_and_password/users.json"
+    print("got users file ")
     try:
-        form = await request.form()
-        user_otp = form.get("otp")
-        print(f"OTP submitted: {user_otp}")
-        
-        # Just redirect to home for testing
-        return RedirectResponse(url="/", status_code=303)
-    except Exception as e:
-        print(f"Error in verify: {str(e)}")
-        return HTMLResponse(f"Error: {str(e)}")
+        with open(users_file, 'r') as f:
+            users = json.load(f)
+            print("users : ", users)
+    except:
+        users = {}
+    
+    users[email] = {
+        "name": request.session["reg_name"],
+        "age": request.session["reg_age"],
+        "password": request.session["reg_password"]
+    }
+    print("updates users :", users)
+    data = json.dump(users, f, indent=4)
+    print("writing to file :",data)
+    with open(users_file, "w") as f:
+        json.dump(users, f, indent=4)
+    
+    # In verify_otp after successful registration
+    print("reloading users file ")
+    requests.get(f"{request.base_url}reload-users")
+    # Send welcome email
+    print("sending succesfull email")
+    send_success_email(email, request.session["reg_name"])
+    
+    # Clear registration session data
+    for key in list(request.session.keys()):
+        if key.startswith("reg_"):
+            del request.session[key]
+    print("redirecting to registration success.html")
+    return templates.TemplateResponse(
+        "registration_success.html", 
+        {"request": request, "email": email}
+    )
+
+
 # ema
 @app.post("/voter/vote")
 async def CastVote(request: Request):
