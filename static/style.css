@@ -1,0 +1,55 @@
+body {
+    background-color: #2b3e47;
+    align-items: center;
+    text-align: center;
+}
+.table{
+    background-color: lightblue;
+
+
+
+}
+div {
+    text-align: center;
+    color: white;
+    align-items: center;
+    border-radius: 40px;
+    background-color:  black;
+    padding: 20px;
+    margin-left: 100;
+    margin-right: 100;
+}
+
+.table-heading {
+    color: #ffffff;
+    background-color:  black;
+}
+
+.table-column {
+    color: #adabab;
+    background-color:  #2d75ce;
+}
+
+.table_row {
+    text-align: center;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+
+
+#table {
+    padding: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    border-radius: 25px;
+    background-color:  #0f2846;
+}
+
+#page_title {
+    text-align: center;
+    color: #0f2846;
+    border-radius: 25px;
+    background-color:  #ff4d47;
+}

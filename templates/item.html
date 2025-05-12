@@ -1,0 +1,258 @@
+<!--<html>-->
+<!--<head>-->
+<!--    <title>E-Voting</title>-->
+<!--    <link href="{{ url_for('static', path='/style.css') }}" rel="stylesheet">-->
+<!--    <link rel="stylesheet" href="../static/style.css">-->
+<!--</head>-->
+<!--<body>-->
+<!--    <h1 id="page_title">WELCOME TO BLOCKCHAIN BASED E-VOTING</h1>-->
+<!--    <div class="div-class">-->
+<!--        <table id="table">-->
+<!--            <tr class="table-heading">-->
+<!--                <th class="table_row">Organization</th>-->
+<!--                <th class="table_row">Leader</th>-->
+<!--                <th class="table_row">Code</th>-->
+<!--            </tr>-->
+<!--        </table>-->
+<!--        <br>-->
+<!--        <br>-->
+<!--        <form action="/voter/vote" method="post">-->
+<!--            <label for="userId">User ID: </label>-->
+<!--            <input id="userId" type="text" name="userId">-->
+<!--            <br>-->
+<!--            <br>-->
+<!--            <label for="orgCode">Organization: </label>-->
+<!--            <select id="orgCode" name="orgCode">-->
+<!--                <option value=0>NOTA</option>-->
+<!--            </select>-->
+<!--            <br>-->
+<!--            <br>-->
+<!--            <button type="submit">Vote</button>-->
+<!--        </form>-->
+<!--    </div>-->
+<!--</body>-->
+<!--<script>-->
+
+<!--    function createTableElements(jsonData) {-->
+
+<!--        for (var i = 0; i < jsonData["leaderNames"].length; i++) {-->
+<!--            var tr = document.createElement("tr");-->
+<!--            tr.className = "table-column";-->
+
+<!--            var td1 = document.createElement("th");-->
+<!--            td1.innerText = jsonData["orgNames"][i]-->
+<!--            td1.className = "table_row";-->
+<!--            tr.appendChild(td1);-->
+
+<!--            var td2 = document.createElement("th");-->
+<!--            td2.innerText = jsonData["leaderNames"][i]-->
+<!--            td2.className = "table_row";-->
+<!--            tr.appendChild(td2);-->
+
+<!--            var td3 = document.createElement("th");-->
+<!--            td3.innerText = jsonData["orgCodes"][i]-->
+<!--            td3.className = "table_row";-->
+<!--            tr.appendChild(td3);-->
+
+<!--            var parent = document.getElementById("table");-->
+<!--            parent.appendChild(tr);-->
+<!--        }        -->
+<!--    }-->
+
+<!--    function createSelectElements(jsonData) {-->
+<!--        for (var i = 0; i < jsonData["leaderNames"].length; i++) {-->
+<!--            var parent = document.getElementById("orgCode");-->
+<!--            var option = document.createElement("option");-->
+<!--            option.value = jsonData["orgCodes"][i];-->
+<!--            option.innerText = jsonData["leaderNames"][i];-->
+<!--            parent.appendChild(option);-->
+<!--        }-->
+<!--    }-->
+
+<!--    function getOrgDetail() {-->
+<!--        var xhr = new XMLHttpRequest();-->
+<!--        xhr.open("GET", "http://127.0.0.1:8000/getOrgDetail");-->
+<!--        xhr.send();-->
+<!--        xhr.onload = () => {-->
+<!--            jsonData = JSON.parse(xhr.responseText)-->
+<!--            createTableElements(jsonData)-->
+<!--            createSelectElements(jsonData)-->
+<!--        }-->
+<!--    }-->
+
+<!--    // function handleSubmit(event) {-->
+<!--    //     event.preventDefault();-->
+<!--    //     const data = new FormData(event.target);-->
+<!--    //     const userID = data.get("userId");-->
+<!--    //     const orgCode = data.get("org");-->
+<!--    //     console.log(-->
+<!--    //         {-->
+<!--    //             "userId": userID,-->
+<!--    //             "orgCode": orgCode-->
+<!--    //         }-->
+<!--    //     );-->
+<!--    // }-->
+
+<!--    // console.log(length);-->
+<!--    // console.log("{{ orgNames }}".toString());-->
+
+<!--    getOrgDetail();-->
+<!--    //-->
+<!--    // const form = document.querySelector('form');-->
+<!--    // form.className =addEventListener('submit', handleSubmit);-->
+<!--</script>-->
+<!--</html>-->
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blockchain E-Voting System</title>
+    <link href="{{ url_for('static', path='/style.css') }}" rel="stylesheet">
+    <!-- Add Fallback for local development -->
+    <link rel="stylesheet" href="../static/style.css">
+    <!-- Add modern loading indicator -->
+    <style>
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .loading-spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top: 4px solid #3498db;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .error-message {
+            color: red;
+            font-weight: bold;
+            margin: 10px 0;
+            display: none;
+        }
+        .success-message {
+            color: green;
+            font-weight: bold;
+            margin: 10px 0;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1 id="page_title">WELCOME TO BLOCKCHAIN BASED E-VOTING</h1>
+
+    <div class="div-class">
+        <table id="table">
+            <tr class="table-heading">
+                <th class="table_row">Organization</th>
+                <th class="table_row">Leader</th>
+                <th class="table_row">Code</th>
+            </tr>
+        </table>
+        <br>
+        <br>
+        <form action="/voter/vote" method="post">
+            <label for="userId">Email: </label>
+            <input id="userId" type="email" name="userId">
+            <br>
+            <br>
+            <label for="password">Password: </label>
+            <input id="password" type="password" name="password">
+            <br>
+            <br>
+            <label for="orgCode">Organization: </label>
+            <select id="orgCode" name="orgCode">
+                <option value=0>NOTA</option>
+            </select>
+            <br>
+            <br>
+            <button type="submit">Vote</button>
+        </form>
+
+        <div class="error-message" id="errorMessage"></div>
+        <div class="success-message" id="formSuccess"></div>
+    </div>
+    <!-- Add this somewhere in your HTML body -->
+    <div style="margin-top: 20px">
+        <a href="/admin" style="color: white; text-decoration: underline;">Admin Panel</a>
+    </div>
+    <script>
+        function createTableElements(jsonData) {
+            for (var i = 0; i < jsonData["leaderNames"].length; i++) {
+                var tr = document.createElement("tr");
+                tr.className = "table-column";
+
+                var td1 = document.createElement("th");
+                td1.innerText = jsonData["orgNames"][i]
+                td1.className = "table_row";
+                tr.appendChild(td1);
+
+                var td2 = document.createElement("th");
+                td2.innerText = jsonData["leaderNames"][i]
+                td2.className = "table_row";
+                tr.appendChild(td2);
+
+                var td3 = document.createElement("th");
+                td3.innerText = jsonData["orgCodes"][i]
+                td3.className = "table_row";
+                tr.appendChild(td3);
+
+                var parent = document.getElementById("table");
+                parent.appendChild(tr);
+            }
+        }
+
+        function createSelectElements(jsonData) {
+            for (var i = 0; i < jsonData["leaderNames"].length; i++) {
+                var parent = document.getElementById("orgCode");
+                var option = document.createElement("option");
+                option.value = jsonData["orgCodes"][i];
+                option.innerText = jsonData["leaderNames"][i];
+                parent.appendChild(option);
+            }
+        }
+
+        function getOrgDetail() {
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "/getOrgDetail");
+            xhr.send();
+            xhr.onload = () => {
+                jsonData = JSON.parse(xhr.responseText)
+                createTableElements(jsonData)
+                createSelectElements(jsonData)
+            }
+        }
+
+        // function handleSubmit(event) {
+        //     event.preventDefault();
+        //     const data = new FormData(event.target);
+        //     const userID = data.get("userId");
+        //     const orgCode = data.get("org");
+        //     console.log(
+        //         {
+        //             "userId": userID,
+        //             "orgCode": orgCode
+        //         }
+        //     );
+        // }
+
+        // console.log(length);
+        // console.log("{{ orgNames }}".toString());
+
+        getOrgDetail();
+        //
+        // const form = document.querySelector('form');
+        // form.className =addEventListener('submit', handleSubmit);
+    </script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+<html>
+    <head>
+        <title>Confirmation</title>
+        <link href="{{ url_for('static', path='/confirm.css') }}" rel="stylesheet">
+        <link rel="stylesheet" href="../static/style.css">
+    </head>
+    <body>
+        <div class="div-class">
+            <h2>Status: {{ status }}</h2>
+            <h3>Organisation Name: {{ organisation }}</h3>
+            <h3>Description: {{ description }}</h3>
+        </div>
+    </body>
+</html>
