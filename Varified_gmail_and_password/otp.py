@@ -10,8 +10,8 @@ def generate_otp():
 
 # Step 2: Send OTP via Gmail
 def send_otp(receiver_email, otp):
-    sender_email = "420la007@gmail.com"
-    sender_password = "otvr frxa rpxl ltjs"  # Use App Password
+    sender_email = "ematdaan@gmail.com"
+    sender_password = "lsgj lsql nnqs xjwf  # Use App Password
 
     message = f"Subject: Your OTP Verification Code\n\nYour OTP is: {otp}\n(This OTP is valid for 2 minutes.)"
 
