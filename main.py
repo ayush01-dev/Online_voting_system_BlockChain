@@ -55,8 +55,8 @@ def send_otp(receiver_email, otp):
         return False
 
 def send_success_email(receiver_email, name):
-    sender_email = os.getenv("EMAIL_USER", "420la007@gmail.com")
-    sender_password = os.getenv("EMAIL_PASSWORD", "otvr frxa rpxl ltjs")
+    sender_email = os.getenv("EMAIL_USER", "ematdaan@gmail.com")
+    sender_password = os.getenv("EMAIL_PASSWORD", "lsgj lsql nnqs xjwf")
 
     message = f"""Subject: Welcome to Our Voting System 🎉
 
