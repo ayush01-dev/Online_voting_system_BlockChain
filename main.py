@@ -37,8 +37,8 @@ def generate_otp():
     return otp, timestamp
 
 def send_otp(receiver_email, otp):
-    sender_email = os.getenv("EMAIL_USER", "420la007@gmail.com")
-    sender_password = os.getenv("EMAIL_PASSWORD", "otvr frxa rpxl ltjs")
+    sender_email = os.getenv("EMAIL_USER", "ematdaan@gmail.com")
+    sender_password = os.getenv("EMAIL_PASSWORD", "lsgj lsql nnqs xjwf")
 
     message = f"Subject: Your OTP Verification Code\n\nYour OTP is: {otp}\n(This OTP is valid for 2 minutes.)"
 
