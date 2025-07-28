@@ -1,0 +1,17 @@
+{
+  "user1@example.com": {
+    "name": "John Doe",
+    "age": "25",
+    "password": "password123"
+  },
+  "user2@example.com": {
+    "name": "Jane Smith", 
+    "age": "30",
+    "password": "securepass456"
+  },
+  "admin@example.com": {
+    "name": "Admin User",
+    "age": "35", 
+    "password": "adminpass789"
+  }
+}
