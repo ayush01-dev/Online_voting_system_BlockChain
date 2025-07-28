@@ -35,6 +35,24 @@ The system consists of several key components:
 
 ## 🛠️ Installation
 
+### Quick Setup (Recommended)
+
+**Linux/macOS:**
+```bash
+git clone https://github.com/Akashbht/OVS_2.O.git
+cd OVS_2.O
+./setup.sh
+```
+
+**Windows:**
+```bash
+git clone https://github.com/Akashbht/OVS_2.O.git
+cd OVS_2.O
+setup.bat
+```
+
+### Manual Installation
+
 1. **Clone the repository**
    ```bash
    git clone https://github.com/Akashbht/OVS_2.O.git
@@ -47,13 +65,16 @@ The system consists of several key components:
    ```
 
 3. **Configure email settings**
-   - Update email credentials in `Varified_gmail_and_password/otp.py`
-   - For Gmail, use App Password instead of regular password
+   ```bash
+   cp .env.example .env
+   # Edit .env with your email credentials
+   ```
 
-4. **Set up organizations**
-   - Edit `config/organizations.txt` to add participating organizations
-   - Format: `Organization_Name:Leader_Name:Org_Code`
-   - Minimum 2 organizations required
+4. **Set up configuration files**
+   ```bash
+   cp config/organizations.example.txt config/organizations.txt
+   cp Varified_gmail_and_password/users.example.json Varified_gmail_and_password/users.json
+   ```
 
 ## 🚀 Usage
 
