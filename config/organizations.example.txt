@@ -1,0 +1,13 @@
+# Example Organizations Configuration
+# Format: Organization_Name:Leader_Name:Organization_Code
+# Add one organization per line
+# Minimum 2 organizations required for voting
+
+# Political Parties (Examples)
+BJP:Narendra Modi:BJP001
+INC:Rahul Gandhi:INC002
+AAP:Arvind Kejriwal:AAP003
+BSP:Mayawati:BSP004
+
+# Note: Organization codes should be unique
+# Keep this file updated as organizations are added/removed
