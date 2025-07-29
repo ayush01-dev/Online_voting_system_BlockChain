@@ -53,3 +53,171 @@
     </div>
 </body>
 </html>
+
+<!-- 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - Voting System</title>
+    <link href="{{ url_for('static', path='/style.css') }}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f0f4ff, #dfe9f3);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        h1#page_title {
+            color: #3d5af1;
+            margin-bottom: 30px;
+            font-size: 28px;
+            text-align: center;
+            animation: fadeSlideIn 1.2s ease-in-out;
+        }
+
+        @keyframes fadeSlideIn {
+            0% {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            max-width: 450px;
+            width: 100%;
+            animation: scaleIn 0.6s ease-out;
+        }
+
+        @keyframes scaleIn {
+            from { transform: scale(0.95); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .login-container h2 {
+            color: #333;
+            margin-bottom: 25px;
+            font-size: 22px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .form-group input:focus {
+            border-color: #3d5af1;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(61, 90, 241, 0.1);
+        }
+
+        button {
+            background-color: #3d5af1;
+            color: white;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 16px;
+            width: 100%;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Poppins', sans-serif;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #2a49c8;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(61, 90, 241, 0.25);
+        }
+
+        .error-message {
+            color: #f44336;
+            margin-top: 15px;
+            padding: 10px;
+            background-color: rgba(244, 67, 54, 0.08);
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 500;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 30px 20px;
+            }
+            
+            h1#page_title {
+                font-size: 24px;
+                padding: 0 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1 id="page_title">Admin Login - Blockchain Voting System</h1>
+
+    <div class="login-container">
+        <h2>Enter Admin Token</h2>
+
+        <form method="post" action="/admin/login">
+            <div class="form-group">
+                <label for="token">Admin Token:</label>
+                <input type="password" id="token" name="token" required>
+            </div>
+
+            <button type="submit">Login</button>
+
+            {% if error %}
+            <div class="error-message">{{ error }}</div>
+            {% endif %}
+        </form>
+    </div>
+</body>
+</html> -->

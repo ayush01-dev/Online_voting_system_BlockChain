@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -66,9 +68,8 @@
             background-color: #ff9800;
             color: white;
         }
-
         .delete-btn {
-        background-color: #f44336;
+            background-color: #f44336;
             color: white;
             border: none;
             padding: 5px 10px;
@@ -84,6 +85,7 @@
     <h1 id="page_title">Admin Panel - Blockchain Voting System</h1>
 
     <div class="admin-panel">
+
         <div class="panel-section">
             <h2>Voting Status:
                 <span class="status-indicator
@@ -105,30 +107,8 @@
                 {% endif %}
             </div>
         </div>
-            <!-- In the organizations table, update the table header -->
-        <thead>
-            <tr>
-                <th>Organization Name</th>
-                <th>Leader</th>
-                <th>Code</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for org_name, leader, code in organizations %}
-            <tr>
-                <td>{{ org_name }}</td>
-                <td>{{ leader }}</td>
-                <td>{{ code }}</td>
-                <td>
-                    <button onclick="deleteOrg('{{ code }}')"
-                            style="background-color: #f44336; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer;">
-                        Delete
-                    </button>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
+        
+
         <div class="panel-section">
             <h2>Registered Organizations</h2>
 
@@ -139,6 +119,7 @@
                         <th>Organization Name</th>
                         <th>Leader</th>
                         <th>Code</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -147,6 +128,11 @@
                         <td>{{ org_name }}</td>
                         <td>{{ leader }}</td>
                         <td>{{ code }}</td>
+                        <td>
+                            <button onclick="deleteOrg('{{ code }}')" class="delete-btn">
+                                Delete
+                            </button>
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -155,6 +141,7 @@
             <p>No organizations registered yet.</p>
             {% endif %}
         </div>
+
 
         <div class="panel-section">
             <h2>Add Organization</h2>
@@ -178,6 +165,7 @@
             </form>
             <div id="formMessage" style="margin-top: 10px;"></div>
         </div>
+        
 
         {% if voting_ended %}
         <div class="panel-section">
@@ -241,7 +229,8 @@
                 alert("An error occurred: " + error);
             });
         }
-        // Add this to your existing script section
+        
+        // Delete Organization
         function deleteOrg(code) {
             if (confirm("Are you sure you want to delete this organization? This cannot be undone.")) {
                 const token = prompt("Enter admin token to confirm deletion:");
@@ -271,6 +260,7 @@
                 });
             }
         }
+        
         // Stop Voting
         function stopVoting() {
             const token = prompt("Enter admin token to end voting:");
@@ -299,23 +289,512 @@
 
         // Load Results if voting has ended
         {% if voting_ended %}
-        fetch('/getvotesbyorg')
-            .then(response => response.json())
-            .then(data => {
-                let resultsHtml = '<table><thead><tr><th>Organization</th><th>Votes</th></tr></thead><tbody>';
-
-                for (const [org, votes] of Object.entries(data)) {
-                    resultsHtml += `<tr><td>${org}</td><td>${votes}</td></tr>`;
-                }
-
-                resultsHtml += '</tbody></table>';
-                document.getElementById('results').innerHTML = resultsHtml;
-            })
-            .catch(error => {
-                document.getElementById('results').innerHTML =
-                    `<div style="color: red;">Error loading results: ${error}</div>`;
-            });
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('/getvotesbyorg')
+                .then(response => response.json())
+                .then(data => {
+                    let resultsHtml = '<table><thead><tr><th>Organization</th><th>Votes</th></tr></thead><tbody>';
+                    
+                    for (const [org, votes] of Object.entries(data)) {
+                        resultsHtml += `<tr><td>${org}</td><td>${votes}</td></tr>`;
+                    }
+                    
+                    resultsHtml += '</tbody></table>';
+                    document.getElementById('results').innerHTML = resultsHtml;
+                })
+                .catch(error => {
+                    document.getElementById('results').innerHTML = 
+                        `<div style="color: red;">Error loading results: ${error}</div>`;
+                });
+        });
         {% endif %}
     </script>
 </body>
 </html>
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Voting System</title>
+    <link href="{{ url_for('static', path='/style.css') }}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f0f4ff, #dfe9f3);
+            min-height: 100vh;
+            padding: 30px 0;
+        }
+
+        h1#page_title {
+            text-align: center;
+            color: #3d5af1;
+            padding: 20px 0 30px;
+            font-size: 28px;
+            font-weight: 600;
+            animation: fadeSlideIn 0.9s ease-out;
+        }
+
+        @keyframes fadeSlideIn {
+            0% {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .admin-panel {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 20px;
+            animation: fadeIn 0.8s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .panel-section {
+            margin-bottom: 30px;
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            animation: scaleIn 0.5s ease-out;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .panel-section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        @keyframes scaleIn {
+            from { transform: scale(0.98); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .panel-section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 22px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        thead {
+            background-color: #f4f8ff;
+        }
+
+        th, td {
+            padding: 14px 15px;
+            text-align: left;
+            border-bottom: 1px solid #eaeaea;
+        }
+
+        tbody tr:hover {
+            background-color: #f9faff;
+        }
+
+        .control-buttons {
+            margin: 20px 0;
+            display: flex;
+            gap: 15px;
+        }
+
+        .control-buttons button {
+            background-color: #3d5af1;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Poppins', sans-serif;
+            font-size: 16px;
+        }
+
+        .control-buttons button:hover {
+            background-color: #2a49c8;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(61, 90, 241, 0.2);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .form-group input:focus {
+            border-color: #3d5af1;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(61, 90, 241, 0.1);
+        }
+
+        button {
+            background-color: #3d5af1;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Poppins', sans-serif;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #2a49c8;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(61, 90, 241, 0.2);
+        }
+
+        .status-indicator {
+            padding: 6px 12px;
+            border-radius: 30px;
+            font-weight: 500;
+            display: inline-block;
+            margin-left: 15px;
+            font-size: 14px;
+        }
+
+        .status-running {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .status-stopped {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .status-waiting {
+            background-color: #ff9800;
+            color: white;
+        }
+
+        .delete-btn {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+        }
+
+        .delete-btn:hover {
+            background-color: #d32f2f;
+            transform: translateY(-2px);
+        }
+
+        #formMessage div {
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-weight: 500;
+        }
+
+        #results {
+            padding: 15px;
+            background-color: #f9faff;
+            border-radius: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .admin-panel {
+                padding: 0 15px;
+            }
+            
+            .panel-section {
+                padding: 20px;
+            }
+            
+            .control-buttons {
+                flex-direction: column;
+            }
+            
+            .control-buttons button {
+                width: 100%;
+            }
+            
+            h1#page_title {
+                font-size: 24px;
+                padding: 15px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1 id="page_title">Admin Panel - Blockchain Voting System</h1>
+
+    <div class="admin-panel">
+
+        <div class="panel-section">
+            <h2>Voting Status:
+                <span class="status-indicator
+                    {% if voting_status == 'Running' %}status-running
+                    {% elif voting_ended %}status-stopped
+                    {% else %}status-waiting{% endif %}">
+                    {{ voting_status }}
+                    {% if voting_ended %} (Ended) {% endif %}
+                </span>
+            </h2>
+
+            <div class="control-buttons">
+                {% if not voting_status == 'Running' and not voting_ended %}
+                <button onclick="startVoting()">Start Voting</button>
+                {% endif %}
+
+                {% if voting_status == 'Running' and not voting_ended %}
+                <button onclick="stopVoting()">End Voting</button>
+                {% endif %}
+            </div>
+        </div>
+        
+      
+        <div class="panel-section">
+            <h2>Registered Organizations</h2>
+
+            {% if organizations|length > 0 %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Organization Name</th>
+                        <th>Leader</th>
+                        <th>Code</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for org_name, leader, code in organizations %}
+                    <tr>
+                        <td>{{ org_name }}</td>
+                        <td>{{ leader }}</td>
+                        <td>{{ code }}</td>
+                        <td>
+                            <button onclick="deleteOrg('{{ code }}')" class="delete-btn">
+                                Delete
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p>No organizations registered yet.</p>
+            {% endif %}
+        </div>
+
+
+        <div class="panel-section">
+            <h2>Add Organization</h2>
+            <form id="orgForm">
+                <div class="form-group">
+                    <label for="org_name">Organization Name:</label>
+                    <input type="text" id="org_name" name="org_name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="leader_name">Leader Name:</label>
+                    <input type="text" id="leader_name" name="leader_name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="org_code">Organization Code:</label>
+                    <input type="text" id="org_code" name="org_code" required>
+                </div>
+
+                <button type="submit">Add Organization</button>
+            </form>
+            <div id="formMessage" style="margin-top: 10px;"></div>
+        </div>
+        
+
+        {% if voting_ended %}
+        <div class="panel-section">
+            <h2>Results</h2>
+            <div id="results">Loading results...</div>
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        // Add Organization
+        document.getElementById('orgForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(this);
+
+            fetch('/admin/add_organization', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    document.getElementById('formMessage').innerHTML =
+                        `<div style="color: red;">${data.error}</div>`;
+                } else {
+                    document.getElementById('formMessage').innerHTML =
+                        `<div style="color: green;">Organization added successfully!</div>`;
+                    // Refresh the page to show the new organization
+                    setTimeout(() => location.reload(), 1000);
+                }
+            })
+            .catch(error => {
+                document.getElementById('formMessage').innerHTML =
+                    `<div style="color: red;">An error occurred: ${error}</div>`;
+            });
+        });
+
+        // Start Voting
+        function startVoting() {
+            const token = prompt("Enter admin token to start voting:");
+            if (!token) return;
+
+            fetch('/admin/start', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ token: token })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === "started") {
+                    alert("Voting has been started!");
+                    location.reload();
+                } else {
+                    alert("Failed to start voting. Invalid token.");
+                }
+            })
+            .catch(error => {
+                alert("An error occurred: " + error);
+            });
+        }
+        
+        // Delete Organization
+        function deleteOrg(code) {
+            if (confirm("Are you sure you want to delete this organization? This cannot be undone.")) {
+                const token = prompt("Enter admin token to confirm deletion:");
+                if (!token) return;
+
+                fetch('/admin/delete_organization', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        token: token,
+                        org_code: code
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error);
+                    } else {
+                        alert("Organization deleted successfully!");
+                        location.reload();
+                    }
+                })
+                .catch(error => {
+                    alert("An error occurred: " + error);
+                });
+            }
+        }
+        
+        // Stop Voting
+        function stopVoting() {
+            const token = prompt("Enter admin token to end voting:");
+            if (!token) return;
+
+            fetch('/admin/stop', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ token: token })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === "stoped") {
+                    alert("Voting has been ended!");
+                    location.reload();
+                } else {
+                    alert("Failed to end voting. Invalid token.");
+                }
+            })
+            .catch(error => {
+                alert("An error occurred: " + error);
+            });
+        }
+
+        // Load Results if voting has ended
+        {% if voting_ended %}
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('/getvotesbyorg')
+                .then(response => response.json())
+                .then(data => {
+                    let resultsHtml = '<table><thead><tr><th>Organization</th><th>Votes</th></tr></thead><tbody>';
+                    
+                    for (const [org, votes] of Object.entries(data)) {
+                        resultsHtml += `<tr><td>${org}</td><td>${votes}</td></tr>`;
+                    }
+                    
+                    resultsHtml += '</tbody></table>';
+                    document.getElementById('results').innerHTML = resultsHtml;
+                })
+                .catch(error => {
+                    document.getElementById('results').innerHTML = 
+                        `<div style="color: red;">Error loading results: ${error}</div>`;
+                });
+        });
+        {% endif %}
+    </script>
+</body>
+</html> -->

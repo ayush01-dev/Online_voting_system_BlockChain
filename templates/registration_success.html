@@ -1,0 +1,205 @@
+<!-- templates/registration_success.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Success - Blockchain Voting</title>
+    <link href="{{ url_for('static', path='/style.css') }}" rel="stylesheet">
+    <style>
+        .success-container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .success-message {
+            color: #4CAF50;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1 id="page_title">REGISTRATION SUCCESSFUL</h1>
+    
+    <div class="div-class success-container">
+        <div class="success-message">
+            Your account has been successfully created!
+        </div>
+        
+        <p style="color: white;">
+            A confirmation email has been sent to: <strong>{{ email }}</strong>
+        </p>
+        
+        <p style="color: white;">
+            You can now use your email and password to log in and cast your vote.
+        </p>
+        
+        <div style="margin-top: 20px;">
+            <a href="/" style="color: white; background-color: #0f2846; padding: 10px 15px; border-radius: 4px; text-decoration: none;">
+                Go to Voting Page
+            </a>
+        </div>
+    </div>
+</body>
+</html> -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Success - Blockchain Voting</title>
+    <link href="{{ url_for('static', path='/style.css') }}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f0f4ff, #dfe9f3);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        h1#page_title {
+            color: #3d5af1;
+            margin-bottom: 30px;
+            font-size: 28px;
+            text-align: center;
+            animation: fadeSlideIn 1.2s ease-in-out;
+        }
+
+        @keyframes fadeSlideIn {
+            0% {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .success-container {
+            background-color: #ffffff;
+            padding: 50px 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            animation: scaleIn 0.6s ease;
+        }
+
+        @keyframes scaleIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .success-message {
+            color: #4CAF50;
+            font-size: 22px;
+            margin-bottom: 30px;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        .success-message:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background-color: #4CAF50;
+        }
+
+        .success-container p {
+            color: #555;
+            margin-bottom: 15px;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .success-container strong {
+            color: #3d5af1;
+            font-weight: 600;
+        }
+
+        .action-button {
+            display: inline-block;
+            background-color: #3d5af1;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 500;
+            margin-top: 30px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(61, 90, 241, 0.2);
+        }
+
+        .action-button:hover {
+            background-color: #2a49c8;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(61, 90, 241, 0.3);
+        }
+
+        @media (max-width: 480px) {
+            .success-container {
+                padding: 40px 20px;
+            }
+            
+            h1#page_title {
+                font-size: 24px;
+                padding: 0 20px;
+            }
+            
+            .success-message {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1 id="page_title">REGISTRATION SUCCESSFUL</h1>
+    
+    <div class="success-container">
+        <div class="success-message">
+            Your account has been successfully created!
+        </div>
+        
+        <p>
+            A confirmation email has been sent to: <strong>{{ email }}</strong>
+        </p>
+        
+        <p>
+            You can now use your email and password to log in and cast your vote.
+        </p>
+        
+        <div>
+            <a href="/" class="action-button">
+                Go to Voting Page
+            </a>
+        </div>
+    </div>
+</body>
+</html>

@@ -14,6 +14,13 @@ import uvicorn
 from starlette.middleware.sessions import SessionMiddleware
 import os
 from dotenv import load_dotenv
+from fastapi.responses import RedirectResponse
+import random
+import smtplib
+import time
+import json
+import requests
+
 
 load_dotenv()  # Load environment variables
 # Use os.path.join for file paths
@@ -24,6 +31,55 @@ os.makedirs(config_dir,exist_ok=True)
 
 
 
+def generate_otp():
+    otp = str(random.randint(100000, 999999))
+    timestamp = time.time()
+    return otp, timestamp
+
+def send_otp(receiver_email, otp):
+    sender_email = os.getenv("EMAIL_USER", "ematdaan@gmail.com")
+    sender_password = os.getenv("EMAIL_PASSWORD", "lsgj lsql nnqs xjwf")
+
+    message = f"Subject: Your OTP Verification Code\n\nYour OTP is: {otp}\n(This OTP is valid for 2 minutes.)"
+
+    try:
+        server = smtplib.SMTP("smtp.gmail.com", 587)
+        server.starttls()
+        server.login(sender_email, sender_password)
+        server.sendmail(sender_email, receiver_email, message)
+        server.quit()
+        print(f"OTP sent to {receiver_email}")
+        return True
+    except Exception as e:
+        print("Failed to send email:", e)
+        return False
+
+def send_success_email(receiver_email, name):
+    sender_email = os.getenv("EMAIL_USER", "ematdaan@gmail.com")
+    sender_password = os.getenv("EMAIL_PASSWORD", "lsgj lsql nnqs xjwf")
+
+    message = f"""Subject: Welcome to Our Voting System 🎉
+
+Hello {name},
+
+🎉 Congratulations! You have successfully registered.
+You can now log in and cast your vote.
+
+Warm regards,
+The Team
+"""
+
+    try:
+        server = smtplib.SMTP("smtp.gmail.com", 587)
+        server.starttls()
+        server.login(sender_email, sender_password)
+        server.sendmail(sender_email, receiver_email, message.encode("utf-8"))
+        server.quit()
+        print(f"Confirmation email sent to {receiver_email}")
+        return True
+    except Exception as e:
+        print("Failed to send confirmation email:", e)
+        return False
 
 
 def load_organizations_from_file():
@@ -152,11 +208,180 @@ def stopVoting(item: utils.Token):
             "status": "stoped"
         }
 
+@app.get("/register", response_class=HTMLResponse)
+async def register_page(request: Request):
+    return templates.TemplateResponse("register.html", {"request": request})
+
+@app.post("/register")
+async def register_user(request: Request):
+    form = await request.form()
+    name = form.get("name")
+    age = form.get("age")
+    email = form.get("email")
+    password = form.get("password")
+    
+    # Check if user already exists
+    users_file = "/var/www/voting-data/users.json" if os.path.exists("/var/www/voting-data") else "Varified_gmail_and_password/users.json"
+    
+    try:
+        with open(users_file, 'r') as f:
+            users = json.load(f)
+    except:
+        users = {}
+    
+    if email in users:
+        return templates.TemplateResponse(
+            "register.html", 
+            {"request": request, "error": "This email is already registered!"}
+        )
+    
+    # Generate and send OTP
+    otp, timestamp = generate_otp()
+    if not send_otp(email, otp):
+        return templates.TemplateResponse(
+            "register.html", 
+            {"request": request, "error": "Failed to send OTP. Please try again."}
+        )
+    
+    # Store in session for verification
+    request.session.update({
+        "reg_email": email,
+        "reg_password": password,
+        "reg_otp": otp,
+        "reg_time": timestamp,
+        "reg_name": name,
+        "reg_age": age
+    })
+    
+    return RedirectResponse(url="/verify", status_code=303)
+
+@app.get("/registration-success", response_class=HTMLResponse)
+async def registration_success(request: Request, email: str = None):
+    return templates.TemplateResponse(
+        "registration_success.html", 
+        {"request": request, "email": email}
+    )
+
+@app.get("/verify", response_class=HTMLResponse)
+async def verify_page(request: Request):
+    if "reg_email" not in request.session:
+        # This line has an error - request.get doesn't exist
+        # Fix: Just redirect to register
+        return RedirectResponse(url="/register", status_code=303)
+    
+    return templates.TemplateResponse("verify.html", {"request": request})
+
+@app.post("/verify")
+async def verify_otp(request: Request):
+    print("POST /verify received")  
+    try:
+        form = await request.form()
+        user_otp = form.get("otp")
+        print(f"OTP submitted: {user_otp}")
+        
+        if "reg_otp" not in request.session:
+            print("No OTP in session")
+            return RedirectResponse(url="/register", status_code=303)
+        
+        sent_otp = request.session["reg_otp"]
+        sent_time = request.session["reg_time"]
+        
+        if time.time() - sent_time > 120:
+            print("OTP expired")
+            return templates.TemplateResponse(
+                "verify.html", 
+                {"request": request, "error": "OTP expired. Please try again."}
+            )
+        
+        if user_otp != sent_otp:
+            print("Incorrect OTP")
+            return templates.TemplateResponse(
+                "verify.html", 
+                {"request": request, "error": "Incorrect OTP. Please try again."}
+            )
+        
+        # OTP verified, register the user
+        email = request.session["reg_email"]
+        print("Email verified:", email)
+        
+        users_file = "/var/www/voting-data/users.json" if os.path.exists("/var/www/voting-data") else "Varified_gmail_and_password/users.json"
+        
+        try:
+            with open(users_file, 'r') as f:
+                users = json.load(f)
+                print("Loaded existing users")
+        except Exception as e:
+            print(f"Error loading users file: {e}")
+            users = {}
+        
+        users[email] = {
+            "name": request.session["reg_name"],
+            "age": request.session["reg_age"],
+            "password": request.session["reg_password"]
+        }
+        print("Added new user to data structure")
+        
+        try:
+            with open(users_file, "w") as f:
+                json.dump(users, f, indent=4)
+                print("Saved users to file")
+        except Exception as e:
+            print(f"Error saving users file: {e}")
+        
+        # Remove the problematic requests call
+        # Instead, reload users directly
+        try:
+            # Update the global userData variable
+            global userData
+            userData = user_data.get_user_data()
+            print("Reloaded user data")
+        except Exception as e:
+            print(f"Error reloading users: {e}")
+        
+        # Send welcome email
+        try:
+            print("Sending success email")
+            send_success_email(email, request.session["reg_name"])
+            print("Email sent successfully")
+        except Exception as e:
+            print(f"Error sending email: {e}")
+        
+        # Clear registration session data
+        for key in list(request.session.keys()):
+            if key.startswith("reg_"):
+                del request.session[key]
+        
+        print("Redirecting to success page")
+        # Use a redirect instead of template response
+        return RedirectResponse(url=f"/registration-success?email={email}", status_code=303)
+    
+    except Exception as e:
+        print(f"Unexpected error in verify_otp: {e}")
+        return HTMLResponse(f"An error occurred: {str(e)}")
+
+@app.get("/registration-success", response_class=HTMLResponse)
+async def registration_success(request: Request, email: str = None):
+    return templates.TemplateResponse(
+        "registration_success.html", 
+        {"request": request, "email": email}
+    )
+
+# Add a reload-users endpoint
+@app.get("/reload-users")
+async def reload_users():
+    global userData
+    userData = user_data.get_user_data()
+    return {"status": "reloaded", "count": len(userData)}
+
+# ema
 @app.post("/voter/vote")
 async def CastVote(request: Request):
     formData = await request.form()
     formDict = formData._dict
     print(formData)
+    print(f"Attempting to authenticate: {formDict['userId']}")
+    print(f"Available users: {list(userData.keys())}")
+    print(f"Password match: {formDict['userId'] in userData.keys() and formDict['password'] == userData[formDict['userId']]}")
     print("Reached")
     print(formDict["userId"])
     print(userData.keys())
@@ -223,6 +448,7 @@ async def CastVote(request: Request):
                         "description": "Voting is closed or it is not started"
                     }
                 )
+
 
 
 @app.get("/admin", response_class=HTMLResponse)

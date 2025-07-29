@@ -1,0 +1,278 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Blockchain Voting</title>
+    <link href="{{ url_for('static', path='/style.css') }}" rel="stylesheet">
+    <style>
+        .register-container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: white;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .error-message {
+            color: #ff4d47;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1 id="page_title">REGISTER FOR BLOCKCHAIN BASED E-VOTING</h1>
+    
+    <div class="div-class register-container">
+        <h2>Enter Your Details</h2>
+        
+        {% if error %}
+        <div class="error-message">{{ error }}</div>
+        {% endif %}
+        
+        <form method="post" action="/register">
+            <div class="form-group">
+                <label for="name">Your Name:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="age">Your Age:</label>
+                <input type="number" id="age" name="age" required min="18">
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email Address:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required minlength="6">
+            </div>
+            
+            <button type="submit">Send OTP</button>
+        </form>
+        
+        <div style="margin-top: 20px;">
+            <a href="/" style="color: white;">Back to Voting Page</a>
+        </div>
+    </div>
+</body>
+</html> -->
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Blockchain Voting</title>
+    <link href="{{ url_for('static', path='/style.css') }}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f0f4ff, #dfe9f3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: row;
+            width: 90%;
+            max-width: 1200px;
+            min-height: 600px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            background-color: white;
+        }
+
+        .image-section {
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .image-section img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .form-section {
+            flex: 1;
+            padding: 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background-color: #ffffff;
+        }
+
+        .animated-heading {
+            font-size: 28px;
+            color: #3d5af1;
+            margin-bottom: 10px;
+            animation: fadeSlideIn 1.2s ease-in-out;
+            font-weight: 600;
+        }
+
+        @keyframes fadeSlideIn {
+            0% {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        hr {
+            border: none;
+            height: 2px;
+            background-color: #3d5af1;
+            width: 50px;
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            font-size: 20px;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            border-color: #3d5af1;
+            outline: none;
+            box-shadow: 0 0 5px rgba(61, 90, 241, 0.3);
+        }
+
+        button {
+            background-color: #3d5af1;
+            color: white;
+            border: none;
+            padding: 15px;
+            font-size: 18px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #2a49c8;
+        }
+
+        .error-message {
+            color: #ff4d47;
+            margin: 10px 0 20px;
+            font-weight: bold;
+            background-color: rgba(255, 77, 71, 0.1);
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #3d5af1;
+            text-decoration: none;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        .back-link:hover {
+            color: #2a49c8;
+            text-decoration: underline;
+        }
+
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                height: auto;
+            }
+
+            .image-section {
+                display: none;
+            }
+
+            .form-section {
+                padding: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Left image -->
+        <div class="image-section">
+            <img src="https://img.freepik.com/free-vector/indian-general-voting-background-political-campaign_1017-50133.jpg?t=st=1733457200~exp=1733460800~hmac=bbde327fff0acd1f0fbfea54675889ead4b1a6f33dc6e82ad54cf9db709f55db&w=900" alt="Voting Image" />
+        </div>
+
+        <!-- Right form -->
+        <div class="form-section">
+            <h1 class="animated-heading">Register for E-Voting</h1>
+            <hr>
+            <h2>Enter Your Details</h2>
+            
+            {% if error %}
+            <div class="error-message">{{ error }}</div>
+            {% endif %}
+            
+            <form method="post" action="/register">
+                <input type="text" id="name" name="name" placeholder="Your Name" required>
+                <input type="number" id="age" name="age" placeholder="Your Age" required min="18">
+                <input type="email" id="email" name="email" placeholder="Email Address" required>
+                <input type="password" id="password" name="password" placeholder="Password" required minlength="6">
+                <button type="submit">Send OTP</button>
+            </form>
+            
+            <a href="/" class="back-link">← Back to Voting Page</a>
+        </div>
+    </div>
+</body>
+</html>
